@@ -1,0 +1,16 @@
+language: c # or other C/C++ variants
+
+cache: ccache
+
+script:
+  # copy recommended packages
+  tools/rsync-recommended
+
+  # setup git svn
+  git svn init https://svn.r-project.org/R/trunk
+  git update-ref refs/remotes/git-svn refs/remotes/origin/HEAD
+  git svn rebase
+
+  mkdir build;cd build
+  ../configure CC='ccache gcc' CXX='ccache g++'
+  make && make check
