@@ -1,5 +1,7 @@
 language: c # or other C/C++ variants
 
+env:
+  CURL_VERSION=7.43.0
 addons:
   apt:
     sources:
@@ -59,6 +61,11 @@ before_install:
   - pushd `find . -name zlib-"*" -type d`
   -  ./configure --prefix=$HOME && make && make install
   - popd
+  # curl
+  - wget "http://curl.haxx.se/download/curl-$CURL_VERSION.tar.gz"
+  -  tar zxf "curl-$CURL_VERSION.tar.gz"
+  - pushd "curl-$CURL_VERSION"
+  - ./configure --prefix=$HOME && make && make install
   - popd
 
 script:
