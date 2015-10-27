@@ -2,8 +2,8 @@ language: c # or other C/C++ variants
 
 addons:
   apt:
-    git-svn
-
+    packages:
+      - git-svn
 cache:
   - ccache
 
@@ -12,7 +12,6 @@ script:
   - git svn init https://svn.r-project.org/R/trunk
   - git update-ref refs/remotes/git-svn refs/remotes/origin/HEAD
   - git svn rebase
-
   - mkdir build;cd build
   - ../configure CC='ccache gcc' CXX='ccache g++'
   - make && make check
