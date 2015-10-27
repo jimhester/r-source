@@ -1,8 +1,7 @@
 language: c # or other C/C++ variants
 
 env:
-  - CURL_VERSION=7.43.0
-  - ZLIB_VERSION=1.2.8
+  - CURL_VERSION=7.43.0 ZLIB_VERSION=1.2.8
 
 addons:
   apt:
