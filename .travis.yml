@@ -66,5 +66,5 @@ script:
   - git update-ref refs/remotes/git-svn refs/remotes/origin/HEAD
   - git svn rebase
   - mkdir build;pushd build
-  - ../configure
+  - CPPFLAGS="-I $HOME/include" LDFLAGS="-L $HOME/lib" ../configure
   - make && make check
