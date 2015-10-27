@@ -1,5 +1,12 @@
 language: c # or other C/C++ variants
 
+addons:
+  apt:
+    git-svn
+
+cache:
+  - ccache
+
 script:
   - tools/rsync-recommended
   - git svn init https://svn.r-project.org/R/trunk
