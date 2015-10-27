@@ -58,7 +58,7 @@ before_install:
   - mkdir -p extra
   - pushd extra
   - wget http://zlib.net/zlib-$ZLIB_VERSION.tar.gz
-  - tar xzf zlib_$ZLIB_VERSION.tar.gz
+  - tar xzf zlib-$ZLIB_VERSION.tar.gz
   - pushd "zlib-$ZLIB_VERSION"
   - ./configure --prefix=$HOME && make && make install
   - popd
