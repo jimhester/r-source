@@ -73,11 +73,12 @@ script:
 - make install
 
 before_deploy:
-  - tar cJf R-devel.xz $PREFIX
+  - mkdir -p /tmp/R-bin
+  - tar cJf /tmp/R-bin/R-devel.xz $PREFIX
 
 deploy:
   provider: s3
-  file: R-devel.xz
+  local_dir: /tmp/R-bin
   on:
     repo: jimhester/r-source
     branch: trunk
