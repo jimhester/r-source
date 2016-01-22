@@ -1,83 +1,82 @@
-language: c # or other C/C++ variants
-
+language: c
 env:
-  - CURL_VERSION=7.43.0 ZLIB_VERSION=1.2.8 PREFIX=$HOME/R-bin
-
+- CURL_VERSION=7.43.0 ZLIB_VERSION=1.2.8 PREFIX=$HOME/R-bin
 addons:
   apt:
     sources:
-      - r-packages-precise
+    - r-packages-precise
     packages:
-      - git-svn
-      # from rocker depends
-      - bash-completion
-      - bison
-      - debhelper
-      - default-jdk
-      - g++
-      - gcc
-      - gdb
-      - gfortran
-      - groff-base
-      - libblas-dev
-      - libbz2-dev
-      - libcurl4-openssl-dev
-      - libjpeg-dev
-      - liblapack-dev
-      - liblzma-dev
-      - libncurses5-dev
-      - libpango1.0-dev
-      - libpcre3-dev
-      - libpng-dev
-      - libreadline-dev
-      - libx11-dev
-      - libxt-dev
-      - subversion
-      - texinfo
-      - texlive-base
-      - texlive-extra-utils
-      - texlive-fonts-extra
-      - texlive-fonts-recommended
-      - texlive-generic-recommended
-      - texlive-latex-base
-      - texlive-latex-extra
-      - texlive-latex-recommended
-      - x11proto-core-dev
-      - xauth
-      - xdg-utils
-      - xfonts-base
-      - xvfb
-      - zlib1g-dev
-
+    - git-svn
+    - bash-completion
+    - bison
+    - debhelper
+    - default-jdk
+    - g++
+    - gcc
+    - gdb
+    - gfortran
+    - groff-base
+    - libblas-dev
+    - libbz2-dev
+    - libcurl4-openssl-dev
+    - libjpeg-dev
+    - liblapack-dev
+    - liblzma-dev
+    - libncurses5-dev
+    - libpango1.0-dev
+    - libpcre3-dev
+    - libpng-dev
+    - libreadline-dev
+    - libx11-dev
+    - libxt-dev
+    - subversion
+    - texinfo
+    - texlive-base
+    - texlive-extra-utils
+    - texlive-fonts-extra
+    - texlive-fonts-recommended
+    - texlive-generic-recommended
+    - texlive-latex-base
+    - texlive-latex-extra
+    - texlive-latex-recommended
+    - x11proto-core-dev
+    - xauth
+    - xdg-utils
+    - xfonts-base
+    - xvfb
+    - zlib1g-dev
 cache:
-  - ccache
-
+- ccache
 before_install:
-  - tools/rsync-recommended
-    # zlib
-  - mkdir -p extra
-  - pushd extra
-  - wget http://zlib.net/zlib-$ZLIB_VERSION.tar.gz
-  - tar xzf zlib-$ZLIB_VERSION.tar.gz
-  - pushd "zlib-$ZLIB_VERSION"
-  - ./configure --prefix=$PREFIX && make && make install
-  - popd
-  # curl
-  - wget "http://curl.haxx.se/download/curl-$CURL_VERSION.tar.gz"
-  -  tar zxf "curl-$CURL_VERSION.tar.gz"
-  - pushd "curl-$CURL_VERSION"
-  - ./configure --prefix=$PREFIX && make && make install
-  - popd
-  - popd
-
+- tools/rsync-recommended
+- mkdir -p extra
+- pushd extra
+- wget http://zlib.net/zlib-$ZLIB_VERSION.tar.gz
+- tar xzf zlib-$ZLIB_VERSION.tar.gz
+- pushd "zlib-$ZLIB_VERSION"
+- ./configure --prefix=$PREFIX && make && make install
+- popd
+- wget "http://curl.haxx.se/download/curl-$CURL_VERSION.tar.gz"
+- tar zxf "curl-$CURL_VERSION.tar.gz"
+- pushd "curl-$CURL_VERSION"
+- ./configure --prefix=$PREFIX && make && make install
+- popd
+- popd
 script:
-  # link the git head with SVN
-  - git svn init https://svn.r-project.org/R/trunk
-  - git update-ref refs/remotes/git-svn refs/remotes/origin/HEAD
-  - git svn rebase
-  # Actually build R
-  - mkdir build;pushd build
-  - CPPFLAGS="-I $PREFIX/include" LDFLAGS="-L $PREFIX/lib" ../configure --prefix $PREFIX
-  - make
-  - make check || true
-  - make install
+- git svn init https://svn.r-project.org/R/trunk
+- git update-ref refs/remotes/git-svn refs/remotes/origin/HEAD
+- git svn rebase
+- mkdir build;pushd build
+- CPPFLAGS="-I $PREFIX/include" LDFLAGS="-L $PREFIX/lib" ../configure --prefix $PREFIX
+- make
+- make check || true
+- make install
+- tar cJf R-devel.xz $PREFIX
+deploy:
+  provider: releases
+  api_key:
+    secure: ZD8CxsX6O2fb0qcnriq6y+IpNW+alO8uxwfGW5vfhwt9wTWpkfzKw62D4YK/IE/3ZBA1QxGUIEMzUaNW9XBR1R3n3TCduwmWE6d7byWK6DMreH691KU5b5kSd/oQ61t3gK3oaTsMxVE8wx7Ed6KUkUfblrg9BzVYgPWvzjuwJK9f3q2XIurl/Bd5q/UiFcf1cq01dyXO+I14gomqVA7gr//x7ITHFnIjwuThRBxbm1ifUyBveOcbVpitZzgKEj4dFJDXoHmiJyAC2gsCdMPiPqM1X/u181hPNG+FMmh4GjWa/qTpRdXCngSgyXY/nJv9Oke8zb6wIZgrf1MBo4YtUCw0P3NU3C2zow8NDYTdWbTogqPjnSR6jmbUyS+YXnB6PInk2WLawBIHsMCJJowkAXUQdJrO4SYCO6DBNphx1QK67ayU1V/T2tKYMDzQyT33Fk0qQqvR6Jnzq74uHtlyTzOVd/CapjzDa/ihCas73kus9WjwSjBBzDqH0I76gvqzLwjb2u0ILTjyAI2HPrw4rnM3+kt/WoWa8+ofyQuebgiMiETu1hDWVjoUPn4jFOUKjYMqGyaqTPTmfFo0tKUq8zhjZd2k3wKd6nxygQfhNEbN/jTut/NKnrB/m0+Q9+JhXUdiF/rHEfounguiISemZTbj44N6H/GzWdZ5t2C5Yik=
+  file: R-devel.xz
+  on:
+    repo: jimhester/r-source
+    branch: trunk
