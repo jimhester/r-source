@@ -46,35 +46,37 @@ addons:
     - xvfb
     - zlib1g-dev
 cache:
-- ccache
+  - ccache
+
 before_install:
-- tools/rsync-recommended
-- mkdir -p extra
-- pushd extra
-- wget http://zlib.net/zlib-$ZLIB_VERSION.tar.gz
-- tar xzf zlib-$ZLIB_VERSION.tar.gz
-- pushd "zlib-$ZLIB_VERSION"
-- ./configure --prefix=$PREFIX && make && make install
-- popd
-- wget "http://curl.haxx.se/download/curl-$CURL_VERSION.tar.gz"
-- tar zxf "curl-$CURL_VERSION.tar.gz"
-- pushd "curl-$CURL_VERSION"
-- ./configure --prefix=$PREFIX && make && make install
-- popd
-- popd
+  - tools/rsync-recommended
+  - mkdir -p extra
+  - pushd extra
+  - wget http://zlib.net/zlib-$ZLIB_VERSION.tar.gz
+  - tar xzf zlib-$ZLIB_VERSION.tar.gz
+  - pushd "zlib-$ZLIB_VERSION"
+  - ./configure --prefix=$PREFIX && make && make install
+  - popd
+  - wget "http://curl.haxx.se/download/curl-$CURL_VERSION.tar.gz"
+  - tar zxf "curl-$CURL_VERSION.tar.gz"
+  - pushd "curl-$CURL_VERSION"
+  - ./configure --prefix=$PREFIX && make && make install
+  - popd
+  - popd
+
 script:
-- git svn init https://svn.r-project.org/R/trunk
-- git update-ref refs/remotes/git-svn refs/remotes/origin/HEAD
-- git svn rebase
-- mkdir build;pushd build
-- CPPFLAGS="-I $PREFIX/include" LDFLAGS="-L $PREFIX/lib" ../configure --prefix $PREFIX
-- make
-- make check || true
-- make install
+  - git svn init https://svn.r-project.org/R/trunk
+  - git update-ref refs/remotes/git-svn refs/remotes/origin/HEAD
+  - git svn rebase
+  - mkdir build;pushd build
+  - CPPFLAGS="-I $PREFIX/include" LDFLAGS="-L $PREFIX/lib" ../configure --prefix $PREFIX
+  - make
+  - make check || true
+  - make install
 
 before_deploy:
   - mkdir -p /tmp/R-bin
-  - tar cJf /tmp/R-bin/R-devel.xz $PREFIX
+  - tar cJf /tmp/R-bin/R-devel.xz $(basename $PREFIX)
 
 deploy:
   provider: s3
