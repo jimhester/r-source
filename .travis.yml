@@ -76,7 +76,7 @@ script:
 
 before_deploy:
   - mkdir -p /tmp/R-bin
-  - tar cJf /tmp/R-bin/R-devel.xz $(basename $PREFIX)
+  - tar cJf /tmp/R-bin/R-devel.xz -C $(dirname $PREFIX) $(basename $PREFIX)
 
 deploy:
   provider: s3
