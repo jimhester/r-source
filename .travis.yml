@@ -52,17 +52,17 @@ before_install:
   - tools/rsync-recommended
   - mkdir -p extra
   - pushd extra
-  - wget http://zlib.net/zlib-$ZLIB_VERSION.tar.gz
+  - wget --no-check-certificate http://zlib.net/zlib-$ZLIB_VERSION.tar.gz
   - tar xzf zlib-$ZLIB_VERSION.tar.gz
   - pushd "zlib-$ZLIB_VERSION"
   - ./configure --prefix=$PREFIX && make && make install
   - popd
-  - wget "http://curl.haxx.se/download/curl-$CURL_VERSION.tar.gz"
+  - wget --no-check-certificate "http://curl.haxx.se/download/curl-$CURL_VERSION.tar.gz"
   - tar zxf "curl-$CURL_VERSION.tar.gz"
   - pushd "curl-$CURL_VERSION"
   - ./configure --prefix=$PREFIX && make && make install
   - popd
-  - wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-$PCRE_VERSION.gz
+  - wget --no-check-certificate ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-$PCRE_VERSION.gz
   - tar xzf pcre-$PCRE_VERSION.tar.gz
   - pushd pcre-$PCRE_VERSION
   - ./configure --prefix=$PREFIX && make && make install
