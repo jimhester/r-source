@@ -70,11 +70,9 @@ before_install:
   - popd
 
 script:
-  - git config --global user.email "you@example.com"
-  - git config --global user.name "Your Name"
   - git svn init https://svn.r-project.org/R/trunk
   - git update-ref refs/remotes/git-svn refs/remotes/origin/HEAD
-  - git svn rebase
+  - git svn rebase || true
   - mkdir build;pushd build
   - ../configure --prefix $PREFIX CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib
   - make
