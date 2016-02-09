@@ -83,4 +83,4 @@ after_success:
   - mkdir -p /tmp/R-bin
   - tar cJf /tmp/R-bin/R-devel.xz -C $(dirname $PREFIX) $(basename $PREFIX)
   - gem install dpl
-  - if [[ ${TRAVIS_REPO_SLUG} == "jimhester/r-source" && ${TRAVIS_PULL_REQUEST} == 1 ]]; then echo dpl --provider=s3 --bucket="rstudio-travis" --local-dir=/tmp/R-bin; fi
+  - if [[ ${TRAVIS_REPO_SLUG} == "jimhester/r-source" && ${TRAVIS_PULL_REQUEST} == 1 ]]; then dpl --provider=s3 --bucket="rstudio-travis" --local-dir=/tmp/R-bin; fi
