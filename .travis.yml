@@ -70,6 +70,8 @@ before_install:
   - popd
 
 script:
+  - git config --global user.email "you@example.com"
+  - git config --global user.name "Your Name"
   - git svn init https://svn.r-project.org/R/trunk
   - git update-ref refs/remotes/git-svn refs/remotes/origin/HEAD
   - git svn rebase
@@ -79,15 +81,8 @@ script:
   - make check || true
   - make install
 
-before_deploy:
+after_success:
   - mkdir -p /tmp/R-bin
   - tar cJf /tmp/R-bin/R-devel.xz -C $(dirname $PREFIX) $(basename $PREFIX)
-
-deploy:
-  provider: s3
-  local_dir: /tmp/R-bin
-  on:
-    repo: jimhester/r-source
-    branch: trunk
-  skip_cleanup: true
-  bucket: "rstudio-travis"
+  - gem install dpl
+  - if [[ ${TRAVIS_REPO_SLUG} == "jimhester/r-source" && ${TRAVIS_PULL_REQUEST} == 1 ]]; then echo dpl --provider=s3 --bucket="rstudio-travis" --local-dir=/tmp/R-bin; fi
