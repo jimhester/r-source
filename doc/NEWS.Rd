@@ -1,5 +1,5 @@
 % -*- coding: utf-8 -*-
-\newcommand{\Rlogo}{\if{html}{\figure{../../html/logo.jpg}}\if{latex}{\figure{logo.jpg}{options: width=0.5in}}}
+\newcommand{\Rlogo}{\if{html}{\figure{../../html/Rlogo.svg}{options: class="toplogo" alt="[R logo]"}}\if{latex}{\figure{logo.jpg}{options: width=0.5in}}}
 
 \name{NEWS}
 \title{R News}
@@ -285,14 +285,18 @@
       Option \code{logical = FALSE} is now supported on Linux and recent
       versions of OS X (for the latter, thanks to a suggestion of Kyaw
       Sint).
-      
+
       \item \code{hist()} for \code{"Date"} or \code{"POSIXt"} objects
       would sometimes give misleading labels on the breaks, as they
       were set to the day before the start of the period being
       displayed.  The display format has been changed, and the shift of the
-      start day has been made conditional on \code{right = TRUE} (the 
+      start day has been made conditional on \code{right = TRUE} (the
       default).  (\PR{16679})
       
+      \item \R now uses a new logo (donated to the R Foundation by
+      RStudio).  It is defined in \file{.svg} format, so it will resize
+      with text without degradation when displayed in HTML pages.
+
     }
   }
 
@@ -386,16 +390,16 @@
       \item \command{configure} looks for \code{__cospi}, \code{__sinpi}
       and \code{__tanpi} and uses these if \code{cospi}\emph{etc} are
       not found.  (OS X is the main instance.)
-      
+
       \item (Windows) An experimental build of R based on \command{gcc}
       4.9.3 is now available on CRAN on the \file{bin/windows/base/rdevel.html}
-      snapshot page.  This build will require recompilation of at least those 
-      packages that include C++ code, and possibly others.  The CRAN 
+      snapshot page.  This build will require recompilation of at least those
+      packages that include C++ code, and possibly others.  The CRAN
       binary packages still use the older toolchain, so package installs
-      default to \code{type = "source"}.  
-      
-      During the transition, the environment variable \env{R_COMPILED_BY} will 
-      be defined to indicate which toolchain was used to compile R (and hence, 
+      default to \code{type = "source"}.
+
+      During the transition, the environment variable \env{R_COMPILED_BY} will
+      be defined to indicate which toolchain was used to compile R (and hence,
       which should be used to compile code in packages).
     }
   }
@@ -438,7 +442,7 @@
 
       \item Including header \file{S.h} from C++ code would fail on some
       platforms, and so gives a compilation error on all.
-      
+
       \item The deprecated header \file{Rdefines.h} is now compatible
       with defining \code{R_NO_REMAP}.
     }
@@ -489,13 +493,7 @@
       \code{row.names} works better in borderline integer cases, but
       may change the names assigned.  (\PR{16666})
 
-      \item \code{dummy.coef.lm()} now works in more cases, thanks to a
-      proposal by Werner Stahel (\PR{16665}).  In addition, it now works
-      for multivariate linear models (\code{"mlm"}, \code{\link{manova}})
-      thanks to a proposal by Daniel Wollschlaeger.
-      % port to r-patched
-      
-      \item (X11 only)  \code{getGraphicsEvent()} miscoded buttons and 
+      \item (X11 only)  \code{getGraphicsEvent()} miscoded buttons and
       missed mouse motion events.  (\PR{16700})
       % port to r-patched if it doesn't add too many events to graphics windows
     }
@@ -521,8 +519,7 @@
       optional argument \code{stringsAsFactors} (instead of only
       depending on \code{getOption("stringsAsFactors")}).
 
-      \item The \code{as.hclust} method for \code{"dendrogram"}s failed often
-      when there ties in the heights.
+      \code{smooth(x, *)} now also works for long vectors.
     }
   }
 
@@ -593,10 +590,38 @@
 
       \item \code{saveRDS(*, compress = "gzip")} now works as
       documented.  (\PR{16653})
-      
-      \item (Windows only) The \command{Rgui} front end did not 
+
+      \item (Windows only) The \command{Rgui} front end did not
       always initialize the console properly, and could cause
       \R to crash.  (\PR{16998})
+
+      \item \code{dummy.coef.lm()} now works in more cases, thanks to a
+      proposal by Werner Stahel (\PR{16665}).  In addition, it now works
+      for multivariate linear models (\code{"mlm"}, \code{\link{manova}})
+      thanks to a proposal by Daniel Wollschlaeger.
+
+      \item The \code{as.hclust} method for \code{"dendrogram"}s failed often
+      when there were ties in the heights.
+
+      \item \code{reorder()} and \code{midcache.dendrogram()} now are
+      non-recursive and hence applicable to somewhat deeply nested
+      dendrograms, thanks to a proposal by Suharto Anggono in \PR{16424}.
+
+      \item \code{cor.test()} now calculates very small p values
+      more accurately (affecting the result only in extreme not
+      statistically relevant cases).  (\PR{16704})
+
+      \item \code{smooth(*, do.ends=TRUE)} did not always work correctly
+      in \R versions between 3.0.0 and 3.2.3.
+
+      \item \code{pretty(D)} for date-time objects \code{D} now also
+      works well if \code{range(D)} is (much) smaller than a second.  In
+      the case of only one unique value in \code{D}, the pretty range
+      now is more symmetric around that value than previously.
+
+      \item The figures in help pages such as \code{?points} were
+      accidentally damaged, and did not appear in \R 3.2.3.
+      (\PR{16708})
     }
   }
 }
