@@ -1,8 +1,7 @@
 language: c
 sudo: false
 env:
-  - CURL_VERSION=7.43.0 ZLIB_VERSION=1.2.8 PCRE_VERSION=8.38 PREFIX=$HOME/R-bin
-
+- CURL_VERSION=7.43.0 ZLIB_VERSION=1.2.8 PCRE_VERSION=8.38 PREFIX=$HOME/R-bin
 addons:
   apt:
     sources:
@@ -88,13 +87,11 @@ before_deploy:
 
 deploy:
   provider: s3
-  local_dir: /tmp/R-bin
-  on:
-    repo: wch/r-source
-    branch: build-trunk
-  skip_cleanup: true
-  bucket: rstudio-travis
-  access_key_id:
-    secure: ybPb3/ndcSddKpahoiHVn8VBLmkidPIUFE7JTrLbvcJr8nA4Qcm4VRWb4HeXqDOn9Mm8ibaUyk8UoLZ749sxLZaw7Oidxd9g9qSaRYL7VMXaO+J0iIEWADrs3Ytz2DcMMhap72OIW4SqG+YHXAAh5XJFt7WfpC57bELZQS1U6jcpMQ10lgHNZhl6YpiVy+8gyc/6TwLBUt7ksDS+KZYBm/LWa32N1K/v7fAVxp65sG9ETs33dOmQV823rKmlf3jtGNorMA5szfBpNkYnilHyD2ucLbKO7fS3VCjkLa7lwuu+VhY6R82XZhQbqpXDWbsQOGhYTayocIKyaguxG4OBxlmvAIlRECxbkaSC59rMBcVcjUzwhVUWuvw6zOsKNJ2gSqRqu/LlOOJrgVZLEEudgNgmPHlsXCcwKNF86V/jjLJjf85HV87C18TTZdQryWQCo6+LIZtj3AigmFsuJmNRGZSQDBZxdGNEWJALXS59mTS2ECGLrCnF5bj3CbIxoaqoEzF+CY2jnpXxYET5l/oS10DBRj2qEMBGcGNhg2mx5/Mt2jZfuQInShTey9ibA28b2IsM77TLd3kDafgqVH9ohZtI+fOURCDEFPyP2z1uWrMWEHNf9jie02W+N+3eZgB1uBN4gE7QxrG0sXECDD7P1zpegSI9onZeazFfsfIOKk4=
+  access_key_id: AKIAI4NKQAY3ELAE3IPQ
   secret_access_key:
-    secure: rgWlqb0BeFr2UP2qRe4Bxp3htKnk7PSXtuQLXaR0fDP/ajSQ8Y5XPMk7n+Bd1BCBBIpo+mcssUywRR28WTwjcpibSgUHD3u1uVickabVpUNVMGdbncxiT4CPgYAIfHS+b7Ue1zRqpqdeS5XoI+zDLkMsBsnAne0mNVzvF8VjcN8riyt82pRWSEFsm2+PGW7QIH7GKIkWrGnLUQeIyOdStev5A705cdjH0dX69w61qgQ8Hbf7LKPoNMle+2cjVdkkxaRQLJfD5X59Ul7JXchk7mwbTMrAP0Qo7igEIWgiSxN2z9LuMw34/VcvXaN4gduz7k37G6tRX3olNish/4Y5AcZvEZv4lzVQpxmwvnpIBMr5G7aGWlQOWUj5vZEkSyxt2X3uQ17+GQ/o6WDnA8gIucztCUhblNh/T/YHEK83Pm8MqgH5KHVBYQg3j22bEic4hqcuoY5bGjPyhRil8CZe5mbMhNMtNb8B88C7y9IG7cmz85oUFzQiPR8X1Kn7m7dfdccDilQMz9891pf1sNY1oEO3J6ji0b7ptnsTzcD78JIrhutpqTpk5GqyKIpoO3Ou/efnE3/fkP2Aj1EVGoArve2aGM7Erb8LlmKuz6SLu6csUBU2musiLL19PzGjRn/SheSLWaHhRHlnJOjbYtLl32gmfHCGYpxfhy2sIGiB0yU=
+    secure: I/xX1eud3o1OxYw2QTYnAL/pi4xw76N/mT2354QybxI4PrV1cZqW6pxFeS7eoSPppTHcV9sxvDQR13JtPc9h0Zbd+4P0NousQuGGWiUGyfxwv+8u1wLxKbJeO0iJ5wOVgIl7pINvRmXL1ETRGjLhIvzhF+oItnyc9B1TpbV4bzYin1vYxLNqzyQRj0Fujz00cS3GSHrqR0hPNfHG8XLXsJhZhfB+63FTIpxd8AxEn/HwnlYiYIIr0YHePPracIsdpG/JTBDL28El3kQh+VvgyqTPMPzCpY8dzZHaJ6aqa+RU5+hVNACyIYOk8JuqYruI0TrJSBa+IcOF0c6R3ovg+s2Wxz5fz+qoMxtxn6LLLgBENM1mtNPrVet0DYDmgykHlyQG+qq9MKJ9jZqrzwj0RZVzuyRGNvIEOx6ha588+4CsJyCsnnjMj9c5RUtNjToxFEG4S62Pt/3rotxh3auwve53rr57QI5S8/rPz/nttkhmRxHu7EtkMwqc2L3ZDUwIZ5/FQ1Db7dalXcm+Lg/cdrNFzzaqElZWrFF9IzJTqyBc9FJfsaLofqZ3bLw49WU3YD95IG1GZV4KTVejDltYw1RGSxDUGHN0CpaODoMjeK5cYC3hGAvV9cNblLsafo54rkUa62quNeGzBFpOrcYfm/QRZHcROpzNUOcldEeyJO8=
+  bucket: rstudio-travis
+  local-dir: /tmp/R-bin
+  on:
+    repo: jimhester/r-source
+    branch: build-trunk
