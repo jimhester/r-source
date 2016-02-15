@@ -78,7 +78,7 @@ script:
   - mkdir build;pushd build
   - ../configure --prefix $PREFIX CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib
   - make
-  - make check || true
+  - make check-devel
   - make install
 
 before_deploy:
