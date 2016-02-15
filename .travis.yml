@@ -94,5 +94,5 @@ deploy:
   bucket: rstudio-travis
   local-dir: /tmp/R-bin
   on:
-    repo: jimhester/r-source
+    repo: wch/r-source
     branch: build-trunk
