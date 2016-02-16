@@ -30,6 +30,7 @@ addons:
     - libreadline-dev
     - libx11-dev
     - libxt-dev
+    - tcl8.5-dev
     - subversion
     - texinfo
     - texlive-base
