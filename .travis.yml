@@ -66,8 +66,8 @@ before_install:
   - pushd "curl-$CURL_VERSION"
   - ./configure --prefix=$PREFIX && make && make install
   - popd
-  - wget --no-check-certificate ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-$PCRE_VERSION.tar.gz
-  - tar xzf pcre-$PCRE_VERSION.tar.gz
+  - wget https://sourceforge.net/projects/pcre/files/pcre/8.38/pcre-$PCRE_VERSION.tar.bz2
+  - tar xjf pcre-$PCRE_VERSION.tar.bz2
   - pushd pcre-$PCRE_VERSION
   - ./configure --prefix=$PREFIX --enable-utf --enable-unicode-properties && make && make install
   - popd
