@@ -75,7 +75,7 @@ before_install:
 
 script:
   - git svn init https://svn.r-project.org/R/branches/R-3-3-branch
-  - git update-ref refs/remotes/git-svn refs/remotes/origin/branches/R-3-3-branch
+  - git update-ref refs/remotes/git-svn refs/remotes/origin/R-3-3-branch
   - git svn rebase
   - mkdir build;pushd build
   - ../configure --prefix $PREFIX CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib
@@ -94,4 +94,4 @@ deploy:
   local-dir: /tmp/R-bin
   on:
     repo: jimhester/r-source
-    branch: branches/R-3-3-branch
+    branch: R-3-3-branch
