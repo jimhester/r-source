@@ -74,8 +74,8 @@ before_install:
   - popd
 
 script:
-  - git svn init https://svn.r-project.org/R/tags/R-3-2-4/
-  - git update-ref refs/remotes/git-svn refs/remotes/origin/tags/R-3-2-4
+  - git svn init https://svn.r-project.org/R/branches/R-3-3-branch
+  - git update-ref refs/remotes/git-svn refs/remotes/origin/branches/R-3-3-branch
   - git svn rebase
   - mkdir build;pushd build
   - ../configure --prefix $PREFIX CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib
@@ -85,7 +85,7 @@ script:
 
 before_deploy:
   - mkdir -p /tmp/R-bin
-  - tar cJf /tmp/R-bin/R-3.2.4.xz -C $(dirname $PREFIX) $(basename $PREFIX)
+  - tar cJf /tmp/R-bin/R-3.3.0.xz -C $(dirname $PREFIX) $(basename $PREFIX)
 
 deploy:
   skip_cleanup: true
@@ -94,4 +94,4 @@ deploy:
   local-dir: /tmp/R-bin
   on:
     repo: jimhester/r-source
-    branch: tags/R-3-2-4
+    branch: branches/R-3-3-branch
