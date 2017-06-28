@@ -277,6 +277,7 @@ static SEXP	xxrepeat(SEXP, SEXP);
 static SEXP	xxnxtbrk(SEXP);
 static SEXP	xxfuncall(SEXP, SEXP);
 static SEXP	xxdefun(SEXP, SEXP, SEXP, YYLTYPE *);
+static SEXP	xxpipe(SEXP, SEXP);
 static SEXP	xxunary(SEXP, SEXP);
 static SEXP	xxbinary(SEXP, SEXP, SEXP);
 static SEXP	xxparen(SEXP, SEXP);
@@ -306,6 +307,7 @@ static int	xxvalue(SEXP, int, YYLTYPE *);
 %token		SYMBOL_PACKAGE
 %token		COLON_ASSIGN
 %token		SLOT
+%token		PIPE
 
 /* This is the precedence table, low to high */
 %left		'?'
@@ -316,6 +318,7 @@ static int	xxvalue(SEXP, int, YYLTYPE *);
 %right		EQ_ASSIGN
 %left		RIGHT_ASSIGN
 %left		'~' TILDE
+%left		PIPE
 %left		OR OR2
 %left		AND AND2
 %left		UNOT NOT
@@ -382,6 +385,8 @@ expr	: 	NUM_CONST			{ $$ = $1;	setId( $$, @$); }
 	|	expr OR expr			{ $$ = xxbinary($2,$1,$3);	setId( $$, @$); }
 	|	expr AND2 expr			{ $$ = xxbinary($2,$1,$3);	setId( $$, @$); }
 	|	expr OR2 expr			{ $$ = xxbinary($2,$1,$3);	setId( $$, @$); }
+
+	|	expr PIPE expr			{ $$ = xxpipe($1,$3);		setId( $$, @$); }
 
 	|	expr LEFT_ASSIGN expr 		{ $$ = xxbinary($2,$1,$3);	setId( $$, @$); }
 	|	expr RIGHT_ASSIGN expr 		{ $$ = xxbinary($2,$3,$1);	setId( $$, @$); }
@@ -976,6 +981,32 @@ static SEXP xxbinary(SEXP n1, SEXP n2, SEXP n3)
 	PROTECT(ans = R_NilValue);
     UNPROTECT_PTR(n2);
     UNPROTECT_PTR(n3);
+    return ans;
+}
+
+int replace_placeholder_list (SEXP lang, SEXP lhs);
+
+static SEXP xxpipe(SEXP lhs, SEXP rhs)
+{
+    SEXP ans;
+    if (GenerateCode) {
+        if (TYPEOF(rhs) != LANGSXP)
+            error(_("The pipe operator requires a function call as RHS"));
+
+        SEXP fun = CAR(rhs);
+        SEXP args = CDR(rhs);
+
+        int is_replaced = replace_placeholder_list(args, lhs);
+        if (is_replaced)
+            PROTECT(ans = lcons(fun, args));
+        else
+            PROTECT(ans = lcons(fun, lcons(lhs, args)));
+    }
+    else {
+	PROTECT(ans = R_NilValue);
+    }
+    UNPROTECT_PTR(lhs);
+    UNPROTECT_PTR(rhs);
     return ans;
 }
 
@@ -1887,6 +1918,7 @@ static void yyerror(const char *s)
 	"OR2",		"'||'",
 	"NS_GET",	"'::'",
 	"NS_GET_INT",	"':::'",
+	"PIPE",         "'>>'",
 	0
     };
     static char const yyunexpected[] = "syntax error, unexpected ";
@@ -2782,7 +2814,7 @@ static int token(void)
 	return StringValue(c, TRUE);
  symbol:
 
-    if (c == '.') return SymbolValue(c);
+    if (c == '.' || c == '_') return SymbolValue(c);
     if(mbcslocale) {
 	mbcs_get_next(c, &wc);
 	if (iswalpha(wc)) return SymbolValue(c);
@@ -2828,6 +2860,10 @@ static int token(void)
 	if (nextchar('=')) {
 	    yylval = install_and_save(">=");
 	    return GE;
+	}
+	else if (nextchar('>')) {
+	    yylval = install_and_save(">>");
+	    return PIPE;
 	}
 	yylval = install_and_save(">");
 	return GT;
@@ -2913,6 +2949,9 @@ static int token(void)
 	} else
 	    yylval = install_and_save("*");
 	return c;
+    case '_':
+        yylval = install_and_save("_");
+        return c;
     case '+':
     case '/':
     case '^':
@@ -3097,6 +3136,7 @@ static int yylex(void)
     case AND:
     case OR2:
     case AND2:
+    case PIPE:
     case SPECIAL:
     case FUNCTION:
     case WHILE:
