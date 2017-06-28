@@ -357,6 +357,7 @@ expr	: 	NUM_CONST			{ $$ = $1;	setId( $$, @$); }
 	|	'+' expr %prec UMINUS		{ $$ = xxunary($1,$2);	setId( $$, @$); }
 	|	'!' expr %prec UNOT		{ $$ = xxunary($1,$2);	setId( $$, @$); }
 	|	'~' expr %prec TILDE		{ $$ = xxunary($1,$2);	setId( $$, @$); }
+	|	SPECIAL expr			{ $$ = xxunary($1,$2);	setId( $$, @$); }
 	|	'?' expr			{ $$ = xxunary($1,$2);	setId( $$, @$); }
 
 	|	expr ':'  expr			{ $$ = xxbinary($2,$1,$3);	setId( $$, @$); }
