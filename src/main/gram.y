@@ -293,7 +293,7 @@ static int	xxvalue(SEXP, int, YYLTYPE *);
 %token-table
 
 %token		END_OF_INPUT ERROR
-%token		STR_CONST NUM_CONST NULL_CONST SYMBOL FUNCTION 
+%token		STR_CONST RAW_STR_CONST NUM_CONST NULL_CONST SYMBOL FUNCTION 
 %token		INCOMPLETE_STRING
 %token		LEFT_ASSIGN EQ_ASSIGN RIGHT_ASSIGN LBB
 %token		FOR IN IF ELSE WHILE NEXT BREAK REPEAT
@@ -350,6 +350,7 @@ equal_assign    :    expr EQ_ASSIGN expr_or_assign              { $$ = xxbinary(
                 ;
 
 expr	: 	NUM_CONST			{ $$ = $1;	setId( $$, @$); }
+	|	RAW_STR_CONST			{ $$ = $1;	setId( $$, @$); }
 	|	STR_CONST			{ $$ = $1;	setId( $$, @$); }
 	|	NULL_CONST			{ $$ = $1;	setId( $$, @$); }          
 	|	SYMBOL				{ $$ = $1;	setId( $$, @$); }
@@ -1889,6 +1890,7 @@ static void yyerror(const char *s)
 	"END_OF_INPUT",	"end of input",
 	"ERROR",	"input",
 	"STR_CONST",	"string constant",
+	"RAW_STR_CONST", "raw string constant",
 	"NUM_CONST",	"numeric constant",
 	"SYMBOL",	"symbol",
 	"LEFT_ASSIGN",	"assignment",
@@ -2336,6 +2338,31 @@ static SEXP mkStringUTF8(const ucs_t *wcs, int cnt)
 } while(0)
 #define CTEXT_POP() ct--
 
+static int RawStringValue(int c)
+{
+	Rboolean currtext_truncated = FALSE;
+	int quote = c;
+	char currtext[1010], *ct = currtext;
+	c = xxgetc();
+
+	CTEXT_PUSH(c);
+	while ((c = xxgetc()) != R_EOF && c != quote) {
+		CTEXT_PUSH(c);
+	}
+	yytext[0] = '\0';
+	if (c == R_EOF) {
+			PROTECT(yylval = R_NilValue);
+		return INCOMPLETE_STRING;
+	} else {
+		CTEXT_PUSH('\0');
+	}
+	if (!currtext_truncated) {
+		strcpy(yytext, currtext);
+	}
+
+	PROTECT(yylval = mkString(currtext));
+	return RAW_STR_CONST;
+}
 
 /* forSymbol is true when parsing backticked symbols */
 static int StringValue(int c, Rboolean forSymbol)
@@ -2798,6 +2825,17 @@ static int token(void)
     /* We don't care about other than ASCII digits */
     if (isdigit(c)) return NumericValue(c);
 
+	/* raw strings */
+
+	if (c == 'r') {
+		int k = xxgetc();
+		if (k == '\"' || k == '\'') {
+			return RawStringValue(k);
+		} else {
+			xxungetc(k);
+		}
+	}
+
     /* literal strings */
 
     if (c == '\"' || c == '\'')
@@ -3186,6 +3224,7 @@ static int yylex(void)
 
     case SYMBOL:
     case STR_CONST:
+    case RAW_STR_CONST:
     case NUM_CONST:
     case NULL_CONST:
     case NEXT:
